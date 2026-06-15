@@ -20,6 +20,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create()
         {
             var userId = GetCurrentUserId();
@@ -42,6 +43,7 @@ namespace DoAnLtWeb.Controllers
 
         [HttpGet]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CloneTemplate(int id)
         {
             var userId = GetCurrentUserId();
@@ -235,6 +237,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmJoin(string token)
         {
             var userId = GetCurrentUserId();
@@ -421,19 +424,40 @@ namespace DoAnLtWeb.Controllers
                 }
             }
 
-            _context.Slides.RemoveRange(presentation.Slides);
-            presentation.Slides.Clear();
-
+            var existingSlides = presentation.Slides.OrderBy(s => s.PageNumber).ToList();
             int pageNumber = 1;
-            foreach (var slideDto in data.Slides)
+
+            for (int i = 0; i < data.Slides.Count; i++)
             {
-                presentation.Slides.Add(new Slide
+                var slideDto = data.Slides[i];
+                if (i < existingSlides.Count)
                 {
-                    PageNumber = pageNumber++,
-                    BackgroundColor = string.IsNullOrWhiteSpace(slideDto.BackgroundColor) ? "#ffffff" : slideDto.BackgroundColor,
-                    BackgroundImage = slideDto.BackgroundImage,
-                    ElementsJson = string.IsNullOrWhiteSpace(slideDto.ElementsJson) ? "[]" : slideDto.ElementsJson
-                });
+                    var existingSlide = existingSlides[i];
+                    existingSlide.PageNumber = pageNumber++;
+                    existingSlide.BackgroundColor = string.IsNullOrWhiteSpace(slideDto.BackgroundColor) ? "#ffffff" : slideDto.BackgroundColor;
+                    existingSlide.BackgroundImage = slideDto.BackgroundImage;
+                    existingSlide.ElementsJson = string.IsNullOrWhiteSpace(slideDto.ElementsJson) ? "[]" : slideDto.ElementsJson;
+                }
+                else
+                {
+                    presentation.Slides.Add(new Slide
+                    {
+                        PageNumber = pageNumber++,
+                        BackgroundColor = string.IsNullOrWhiteSpace(slideDto.BackgroundColor) ? "#ffffff" : slideDto.BackgroundColor,
+                        BackgroundImage = slideDto.BackgroundImage,
+                        ElementsJson = string.IsNullOrWhiteSpace(slideDto.ElementsJson) ? "[]" : slideDto.ElementsJson
+                    });
+                }
+            }
+
+            if (existingSlides.Count > data.Slides.Count)
+            {
+                var slidesToRemove = existingSlides.Skip(data.Slides.Count).ToList();
+                _context.Slides.RemoveRange(slidesToRemove);
+                foreach (var s in slidesToRemove)
+                {
+                    presentation.Slides.Remove(s);
+                }
             }
 
             presentation.UpdatedAt = DateTime.UtcNow;
@@ -570,6 +594,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteTemplate(int id)
         {
             if (!(User.IsInRole("Admin") || User.Identity?.Name == "admin@gmail.com"))

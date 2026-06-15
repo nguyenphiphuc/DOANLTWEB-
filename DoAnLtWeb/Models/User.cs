@@ -18,7 +18,6 @@ namespace DoAnLtWeb.Models
         public DateTime? VipExpiresAt { get; set; }
         public string VipPlanName { get; set; } = "Free";
 
-        public List<Project> Projects { get; set; } = new();
         public ICollection<PaymentTransaction> PaymentTransactions { get; set; } = new List<PaymentTransaction>();
     }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DoAnLtWeb.Models
 {
@@ -15,6 +16,7 @@ namespace DoAnLtWeb.Models
         [MaxLength(50)]
         public string PlanName { get; set; } = "VIP Monthly";
 
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
 
         [MaxLength(30)]

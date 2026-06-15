@@ -9,7 +9,6 @@ namespace DoAnLtWeb.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Project> Projects { get; set; }
         public DbSet<Presentation> Presentations { get; set; }
         public DbSet<Slide> Slides { get; set; }
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }

@@ -86,6 +86,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmPayment(int id)
         {
             if (!IsAdmin()) return Forbid();
@@ -115,6 +116,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectPayment(int id)
         {
             if (!IsAdmin()) return Forbid();
@@ -147,6 +149,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteTemplate(int id)
         {
             if (!IsAdmin()) return Forbid();
@@ -165,6 +168,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteTrashTemplates()
         {
             if (!IsAdmin()) return Forbid();
@@ -212,6 +216,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveSubmission(int id, string? adminNote)
         {
             if (!IsAdmin()) return Forbid();
@@ -258,6 +263,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectSubmission(int id, string? adminNote)
         {
             if (!IsAdmin()) return Forbid();
@@ -287,6 +293,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ImportPptx(string fileName, string? category, bool isPremium = false)
         {
             if (!IsAdmin()) return Forbid();
@@ -333,6 +340,7 @@ namespace DoAnLtWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ImportAllPptx(string? category, bool isPremium = false)
         {
             if (!IsAdmin()) return Forbid();
